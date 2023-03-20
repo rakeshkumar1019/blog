@@ -1,0 +1,66 @@
+#Redux
+## Three Core Principle
+1. The Global state of your application is stored as an object inside  a single store.
+2. The only way to change the state is to dispatch an action, an object that describes what happened.
+3. To specify how the state tree is updated based on action, You write pure reducers.
+```
+const reducer  = (state= initalState, action) =>{
+    switch(action.type){
+        case CAKE_ORDERED:
+        return{
+            numOfCakes: state.numOfCakes - 1;
+        }
+    }
+}
+```
+
+## Redux store
+- one store for the entire application
+> Responsibilities: 
+- Holds application state
+- Allow access to state via `getState()`
+- Allow state to be updated via `dispatch(action)`
+- Register listeners via subscribe(listener)
+- Handles unregistering of listeners via the function returned by subscribe(listener)
+
+## Code Example
+```
+const redux = require('redux')
+const createStore = redux.createStore
+
+const CAKE_ORDERED = 'CAKE_ORDERED';
+
+function orderCake(){
+    return{
+        type: CAKE_ORDERED,
+        quantity: 1,
+    }
+}
+const  initialState = {
+    numOfCakes: 10,
+    anotherProperty: 0,
+}
+
+const reducer = (state = initialState, action) =>{
+    switch(action.type){
+        case CAKE_ORDERED:
+            return{
+                ...state,
+                numOfCakes: state.numOfCakes - 1,
+            }
+        default:
+            return state;
+    }
+}
+
+const store = createStore(reducer)
+console.log("InitalState",store.getState())
+const unsubscribe =  store.subscribe(()=> console.log("update state", store.getState()))
+store.dispatch(orderCake())
+store.dispatch(orderCake())
+store.dispatch(orderCake())
+
+unsubscribe();
+store.dispatch(orderCake())
+
+```
